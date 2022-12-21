@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+cd ../rbx-dom
+
+if [ "$1" = "--dry-run" ]; then
+	# If run with --dry-run, don't emit the reflection database anywhere.
+	cargo run --bin generate_reflection \
+		--patches patches
+else
+	cargo run --bin generate_reflection -- \
+		--patches patches \
+		--msgpack rbx_reflection_database/database.msgpack \
+		--json rbx_dom_lua/src/database.json \
+		--values rbx_dom_lua/src/allValues.json
+fi
+
+cp -rT rbx_dom_lua/src ../rojo/plugin/rbx_dom_lua
